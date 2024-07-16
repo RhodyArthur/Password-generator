@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -25,6 +25,7 @@ includeNumbers: boolean = false;
 includeSymbols: boolean = false;
 strengthValue:string = ''
 indicator:string = ''
+rangeValue:number = 8
 
 
 constructor(){}
@@ -106,4 +107,29 @@ copyPassword() {
     this.copiedMessage = ''
   }, 2000)
 }
+@ViewChild('slider') slider!: ElementRef;
+ngAfterViewInit(): void {
+
+  setTimeout(() => {
+    // this.rangeValue =
+    //   (this.slider.nativeElement.min + this.slider.nativeElement.max) / 2;
+    this.updateSliderBackground();
+  });
+}
+
+updateSliderBackground(): void {
+  const percentage =
+    ((this.rangeValue - this.slider.nativeElement.min) /
+      (this.slider.nativeElement.max - this.slider.nativeElement.min)) *
+    100;
+  const remainingPercentage = 100 - percentage;
+  this.slider.nativeElement.style.background = `linear-gradient(to right, #A4FFAF ${percentage}%, black ${percentage}%, black ${remainingPercentage}%)`;
+}
+
+onRangeInput(event: Event): void {
+  this.updateSliderBackground();
+  const inputElement = event.target as HTMLInputElement;
+  this.rangeValue = Number(inputElement.value);
+}
+
 }
